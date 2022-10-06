@@ -10,3 +10,16 @@
 function add(a, b){
     return a + b;
 }
+
+/**
+ * Subtracts two given numbers and returns the difference.
+ * @example
+ * // returns 2
+ * subtract(5, 3);
+ * @param {number} a - a number to be subtracted from
+ * @param {number} b - a number to subtract from a
+ * @returns {number} The difference of a and b
+ */
+ function subtract(a, b){
+    return a - b;
+}
