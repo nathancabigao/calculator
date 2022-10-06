@@ -49,3 +49,47 @@ function add(a, b){
  function divide(a, b){
     return a / b;
 }
+
+/**
+ * Takes an operator and 2 numbers, and calls the appropriate function with
+ * those 2 numbers, returning the result.
+ * @example
+ * // returns 6
+ * operate("+", 4, 2);
+ * @param {string} operator - the operator symbol of the function
+ * @param {number} a - a number
+ * @param {number} b - a number
+ * @returns {number} The result of the operation
+ */
+function operate(operator, a, b){
+    // Ensure a and b are numbers
+    a = Number(a);
+    b = Number(b);
+    if(isNaN(a) || isNaN(b)){
+        return null;
+    }
+
+    switch(operator){
+        case "+":
+            return add(a, b);
+        case "-":
+            return subtract(a, b);
+            break;
+        case "×": // Fallthrough
+        case "x":
+        case "X":
+        case "*":
+            return multiply(a, b);
+            break;
+        case "÷": // Fallthrough
+        case "/":
+            // ensure we are not dividing by 0
+            if (b === 0) {
+                return null;
+            }
+            return divide(a, b);
+            break;
+        default:
+            return null;
+    }
+}
