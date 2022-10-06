@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Mono:wght@100;400;600;700&display=swap');
+
 * {
+    font-family: "Roboto Mono", 'Courier New', Courier, monospace;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -10,15 +13,22 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    background-color: #f2fff5;
+}
+
+h1{
+    font-weight: 100;
+    font-size: 42px;
+    padding: .5em;
 }
 
 #calculator {
-    height: 300px;
-    width: 250px;
+    height: 350px;
+    width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    background-color: #aaaaaa;
+    background-color: #bbbbbb;
     padding: 1em;
     margin: 1em;
     border-radius: 5px;
@@ -26,13 +36,16 @@ body {
 
 #display {
     display: flex;
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #f2fff5;
+    color: #000000;
+    font-weight: 700;
+    font-size: 22px;
     flex: 1;
-    height: 40px;
+    height: 50px;
     align-items: center;
     justify-content: right;
     padding: 2px 0.25em;
+    margin-bottom: 1em;
 }
 .row {
     display: flex;
@@ -42,14 +55,56 @@ body {
 
 button {
     cursor: pointer;
+    user-select: none;
+    color: #ffffff;
+    background-color: #333333;
+    border: 2px solid #222222;
+    border-radius: 10px;
     width: 50px;
-    height: 30px;
+    height: 40px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 0px;
     flex: 1;
 }
 
 button.equals, button.delete {
     flex: 2 10px;
+    font-size: 32px;
 }
+button.equals, button.clear{
+    background-color: #e27434;
+    border-color: #c5652e;
+}
+button.delete{
+    background-color: #899fa0;
+    border-color: #748788;
+}
+
+button.operator{
+    background-color: #666666;
+    border-color: #555555;
+}
+
+button:active {
+    background-color: #222222;
+    border-color: #000000;
+}
+button.delete:active {
+    background-color: #748788;
+    border-color: #515e5f;
+}
+button.equals:active, button.clear:active {
+    background-color: #c5652e;
+    border-color: #a55527;
+}
+button.operator:active {
+    background-color: #555555;
+    border-color: #222222;
+}
+
+
 
 #footer {
     margin-top: auto;
