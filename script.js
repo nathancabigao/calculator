@@ -4,6 +4,7 @@ const btnDelete = document.querySelector("button.delete");
 const btnClear = document.querySelector("button.clear");
 const btnEquals = document.querySelector("button.equals");
 const display = document.querySelector("#display");
+let value1 = 0, value2 = 0;
 
 addBtnListeners();
 
@@ -14,13 +15,16 @@ function addBtnListeners(){
     // numbers: append number to display
     btnNumbers.forEach((btnNumber) => {
         btnNumber.addEventListener('click', () => {
+            // TODO: block multiple decimals
+            // TODO: block input after a certain length
+            // TODO: if current value is "0", overwrite it
             display.textContent += btnNumber.textContent;
         });
     });
 
     // clear: empty display text
     btnClear.addEventListener('click', () => {
-        display.textContent = '';
+        display.textContent = '0';
     });
 
     // delete: trim the display text by 1
@@ -29,6 +33,7 @@ function addBtnListeners(){
     });
 
     // operators
+    // equals
 }
 /**
  * Adds two given numbers and returns the resulting sum.
