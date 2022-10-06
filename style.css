@@ -23,8 +23,8 @@ h1{
 }
 
 #calculator {
-    height: 350px;
-    width: 300px;
+    height: 400px;
+    width: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -39,9 +39,9 @@ h1{
     background-color: #f2fff5;
     color: #000000;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 28px;
     flex: 1;
-    height: 50px;
+    height: 60px;
     align-items: center;
     justify-content: right;
     padding: 2px 0.25em;

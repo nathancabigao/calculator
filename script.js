@@ -15,9 +15,18 @@ function addBtnListeners(){
     // numbers: append number to display
     btnNumbers.forEach((btnNumber) => {
         btnNumber.addEventListener('click', () => {
-            // TODO: block multiple decimals
-            // TODO: block input after a certain length
-            // TODO: if current value is "0", overwrite it
+            // block multiple decimals
+            if(btnNumber.textContent == "." && display.textContent.includes(".")){
+                return;
+            }
+            // block input after a certain length
+            if(display.textContent.length >= 18){
+                return;
+            }
+            // if current value is "0", overwrite it unless decimal
+            if(display.textContent == "0" && btnNumber.textContent != "."){ 
+                display.textContent = ""; 
+            }
             display.textContent += btnNumber.textContent;
         });
     });
@@ -29,11 +38,22 @@ function addBtnListeners(){
 
     // delete: trim the display text by 1
     btnDelete.addEventListener('click', () => {
+        // display 0 if last number being deleted.
+        if(display.textContent.length == 1){
+            display.textContent = "0";
+        }
         display.textContent = display.textContent.slice(0,-1);
     });
 
     // operators
     // equals
+}
+
+/**
+ * Stores the current display value
+ */
+function storeDisplayValue(){
+
 }
 /**
  * Adds two given numbers and returns the resulting sum.
