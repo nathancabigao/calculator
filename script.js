@@ -1,3 +1,35 @@
+const btnNumbers = document.querySelectorAll("button.num");
+const btnOperators = document.querySelectorAll("button.operator");
+const btnDelete = document.querySelector("button.delete");
+const btnClear = document.querySelector("button.clear");
+const btnEquals = document.querySelector("button.equals");
+const display = document.querySelector("#display");
+
+addBtnListeners();
+
+/**
+ * Adds button listeners for all calculator buttons.
+ */
+function addBtnListeners(){
+    // numbers: append number to display
+    btnNumbers.forEach((btnNumber) => {
+        btnNumber.addEventListener('click', () => {
+            display.textContent += btnNumber.textContent;
+        });
+    });
+
+    // clear: empty display text
+    btnClear.addEventListener('click', () => {
+        display.textContent = '';
+    });
+
+    // delete: trim the display text by 1
+    btnDelete.addEventListener('click', () => {
+        display.textContent = display.textContent.slice(0,-1);
+    });
+
+    // operators
+}
 /**
  * Adds two given numbers and returns the resulting sum.
  * @example
