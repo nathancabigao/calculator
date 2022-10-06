@@ -5,7 +5,7 @@
  * add(2, 3);
  * @param {number} a - a number to be added
  * @param {number} b - a number to be added
- * @returns {number} The sum of a and b.
+ * @returns {number} The sum of a and b
  */
 function add(a, b){
     return a + b;
@@ -22,4 +22,17 @@ function add(a, b){
  */
  function subtract(a, b){
     return a - b;
+}
+
+/**
+ * Multiplies two given numbers and returns the product.
+ * @example
+ * // returns 6
+ * multiply(2, 3);
+ * @param {number} a - a number to be multiplied
+ * @param {number} b - a number to be multiplied
+ * @returns {number} The product of a and b
+ */
+ function multiply(a, b){
+    return a * b;
 }
