@@ -36,3 +36,16 @@ function add(a, b){
  function multiply(a, b){
     return a * b;
 }
+
+/**
+ * Divides two given numbers and returns the quotient.
+ * @example
+ * // returns 3
+ * divide(6, 2);
+ * @param {number} a - a dividend number
+ * @param {number} b - a divisor number
+ * @returns {number} The quotient of a and b
+ */
+ function divide(a, b){
+    return a / b;
+}
