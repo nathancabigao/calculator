@@ -4,7 +4,9 @@ const btnDelete = document.querySelector("button.delete");
 const btnClear = document.querySelector("button.clear");
 const btnEquals = document.querySelector("button.equals");
 const display = document.querySelector("#display");
-let value1 = 0, value2 = 0;
+let currentOperator = '';
+let valueA = 0, valueB = 0;
+let occupiedA = false, occupiedB = false;
 
 addBtnListeners();
 
@@ -34,6 +36,9 @@ function addBtnListeners(){
     // clear: empty display text
     btnClear.addEventListener('click', () => {
         display.textContent = '0';
+        valueA = 0, valueB = 0;
+        displayValue = 0;
+        occupiedA = false, occupiedB = false;
     });
 
     // delete: trim the display text by 1
@@ -46,14 +51,25 @@ function addBtnListeners(){
     });
 
     // operators
-    // equals
+    
+     // equals
 }
 
 /**
- * Stores the current display value
+ * Stores the current display value in memory. If there is no storage left,
+ * overwrite A and wipe B.
  */
-function storeDisplayValue(){
-
+function storeDisplayValue(displayValue){
+    if (occupiedA) {
+        if (occupiedB) {
+            valueA = Number(displayValue);
+            occupiedA = true, occupiedB = false;
+        }
+        valueB = Number(displayValue);
+        occupiedB = true;
+    }
+    valueA = Number(displayValue);
+    occupiedA = true;
 }
 /**
  * Adds two given numbers and returns the resulting sum.
