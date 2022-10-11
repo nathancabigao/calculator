@@ -131,7 +131,12 @@ function equate(){
     }
     console.log("test");
     storeDisplayValue(result);
-    display.textContent = valueA;
+    // if scientific notation, limit sigFigs further than usual
+    let sigFigs = 15;
+    if (valueA.toString().includes('e')){
+        sigFigs = 13;
+    }
+    display.textContent = valueA.toPrecision(sigFigs);
     // clear current operator, enable chaining
     currentOperator = '';
     overwriteDisplay = true;
@@ -259,7 +264,7 @@ function operate(operator, a, b){
         case "/":
             // ensure we are not dividing by 0
             if (b === 0) {
-                return "error";
+                return "ERROR";
             }
             return divide(a, b);
             break;
