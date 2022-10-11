@@ -15,98 +15,98 @@ addBtnListeners();
  * Adds button listeners for all calculator buttons.
  */
 function addBtnListeners(){
-    // debug button listener
-    const allBtns = document.querySelectorAll("button");
     // numbers: append number to display
     btnNumbers.forEach((btnNumber) => {
-        btnNumber.addEventListener('click', () => {
-            // block multiple decimals
-            if(btnNumber.textContent == "." && display.textContent.includes(".")){
-                return;
-            }
-            // block input after a certain length
-            if(display.textContent.length >= 18){
-                return;
-            }
-            // if current value is "0", overwrite it unless decimal
-            if(display.textContent == "0" && btnNumber.textContent != "."){ 
-                display.textContent = ""; 
-            }
-            // if we can overwrite the result 
-            // ex. if we did 6+9, 15 will be displayed but we can overwrite by
-            // pressing another button
-            if(overwriteDisplay){
-                display.textContent = btnNumber.textContent;
-                overwriteDisplay = false;
-            }
-            else{
-                display.textContent += btnNumber.textContent;
-            }
-        });
+        btnNumber.addEventListener('click', insertNumber);
     });
 
     // clear: empty display text
     btnClear.addEventListener('click', clear);
 
     // delete: trim the display text by 1
-    btnDelete.addEventListener('click', () => {
-        // display 0 if last number being deleted.
-        if(display.textContent.length == 1){
-            display.textContent = "0";
-        }
-        else{
-            display.textContent = display.textContent.slice(0,-1);
-        }
+    btnDelete.addEventListener('click', deleteDisplayChar);
 
+    // operators: store operation and equate when necessary
+    btnOperators.forEach((btnOperator) => {
+        btnOperator.addEventListener('click', operationPress);
     });
 
-    // operators
-    btnOperators.forEach((btnOperator) => {
-        btnOperator.addEventListener('click', () => {
-            console.log(btnOperator.textContent + "current:" + currentOperator);
-            // check first if there was a previous operation
-            if(currentOperator != ''){
-                equate();
-                console.log("hi");
-                // we then keep this operator for the next.
-                currentOperator = btnOperator.textContent;
-                //display.textContent = valueA;
-                overwriteDisplay = true;
-            }
-            //
-            // if there was no previous, set up for the upcoming operation
-            else{
-                // store the called operator
-                currentOperator = btnOperator.textContent;
-                // store the first value
-                storeDisplayValue(display.textContent);
-                // clear the display
-                display.textContent = "0";
-            }
-        })
-    })
-
-     // equals
+     // equals: call operate and display results, while allowing further
+     // calculations on result.
     btnEquals.addEventListener('click', () => {
         equate();
-        // Allow for chaining calculations (ex. = 11 and pressing + after)
-        if(isNaN(Number(display.textContent))){
-            valueA = 0; //so we don't store NaN
-        }
-        else{
-            valueA = Number(display.textContent);
-        }
-        valueB = 0;
-        occupiedA = false;
-        occupiedB = false;
+        allowChain();
     });
+}
 
-    allBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            console.log(`valueA:${valueA}, occupiedA:${occupiedA}, valueB:${valueB}, occupiedB:${occupiedB}, currentOperator:${currentOperator}, Button Pressed:${btn.textContent}`);
-        })
-    })
+/**
+ * Event: Allows for chaining calculations after equating an operation.
+ */
+function allowChain(){
+    // Allow for chaining calculations (ex. = 11 and pressing + after)
+    if(isNaN(Number(display.textContent))){
+        valueA = 0; //so we don't store NaN
+    }
+    else{
+        valueA = Number(display.textContent);
+    }
+    valueB = 0;
+    occupiedA = false;
+    occupiedB = false;
+}
 
+/**
+ * Event: Insert numbers onto the display.
+ * @param {Object} e - The button object of the number to insert
+ */
+function insertNumber(e){
+    // block multiple decimals
+    if(e.currentTarget.textContent == "." && display.textContent.includes(".")){
+        return;
+    }
+    // block input after a certain length
+    if(display.textContent.length >= 18){
+        return;
+    }
+    // if current value is "0", overwrite it unless decimal
+    if(display.textContent == "0" && e.currentTarget.textContent != "."){ 
+        display.textContent = ""; 
+    }
+    // if we can overwrite the result 
+    // ex. if we did 6+9, 15 will be displayed but we can overwrite by
+    // pressing another button
+    if(overwriteDisplay){
+        display.textContent = e.currentTarget.textContent;
+        overwriteDisplay = false;
+    }
+    else{
+        display.textContent += e.currentTarget.textContent;
+    }
+}
+
+/**
+ * Event: Calls an operation or stores one to be called.
+ * @param {Object} e - The button object of the operation
+ */
+function operationPress(e) {
+    // check first if there was a previous operation
+    if(currentOperator != ''){
+        equate();
+        // we then keep this operator for the next.
+        currentOperator = e.currentTarget.textContent;
+        //display.textContent = valueA;
+        overwriteDisplay = true;
+    }
+    //
+    // if there was no previous, set up for the upcoming operation
+    else{
+        // store the called operator
+        currentOperator = e.currentTarget.textContent;
+        // store the first value
+        storeDisplayValue(display.textContent);
+        // clear the display
+        display.textContent = "0";
+    }
 }
 
 /**
@@ -115,7 +115,6 @@ function addBtnListeners(){
 function equate(){
     // if there was no previous operation, do nothing.
     if(currentOperator === ''){
-        console.log("equate: no current")
         return;
     }
     // if there was, operate.
@@ -129,21 +128,33 @@ function equate(){
         overwriteDisplay = true;
         return;
     }
-    console.log("test");
     storeDisplayValue(result);
-    // if scientific notation, limit sigFigs further than usual
-    let sigFigs = 15;
-    if (valueA.toString().includes('e')){
-        sigFigs = 13;
-    }
-    display.textContent = valueA.toPrecision(sigFigs);
+    displayRoundedValue();
     // clear current operator, enable chaining
     currentOperator = '';
     overwriteDisplay = true;
 }
 
 /**
- * Clears the calculator of its memory.
+ * Rounds the value of the operation if necessary.
+ */
+function displayRoundedValue(){
+    // Case 1: A number well within char limit.
+    if(valueA.toString().length < 18){
+        display.textContent = valueA;
+        return;
+    }
+    // Case 2: A number without scientific notation, limit to 15 digits
+    let sigFigs = 16;
+    // Case 3: A number with scientific notation, limit to 12 digits
+    if (valueA.toString().length >= 18){
+        sigFigs = 13;
+    }
+    display.textContent = valueA.toPrecision(sigFigs);
+}
+
+/**
+ * Event: Clears the calculator of its memory.
  */
 function clear(){
     display.textContent = '0';
@@ -154,11 +165,24 @@ function clear(){
 }
 
 /**
+ * Event: Deletes a character from the display.
+ */
+function deleteDisplayChar() {
+    // display 0 if last number being deleted.
+    if(display.textContent.length == 1){
+        display.textContent = "0";
+    }
+    else{
+        display.textContent = display.textContent.slice(0,-1);
+    }
+}
+
+/**
  * Stores the current display value in memory. If there is no storage left,
  * overwrite A and wipe B.
+ * @param {String} displayValue - A value to be stored in memory.
  */
 function storeDisplayValue(displayValue){
-    console.log("Storing: " + displayValue);
     if (occupiedA) {
         if (occupiedB) {
             valueA = Number(displayValue);
@@ -169,7 +193,6 @@ function storeDisplayValue(displayValue){
         else {
             valueB = Number(displayValue);
             occupiedB = true;
-            console.log("valueB: " + valueB + " occupiedB: " + occupiedB);
         }
     }
     else {
@@ -177,6 +200,7 @@ function storeDisplayValue(displayValue){
         occupiedA = true;
     }
 }
+
 /**
  * Adds two given numbers and returns the resulting sum.
  * @example
