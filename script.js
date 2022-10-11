@@ -46,13 +46,7 @@ function addBtnListeners(){
     });
 
     // clear: empty display text
-    btnClear.addEventListener('click', () => {
-        display.textContent = '0';
-        valueA = 0, valueB = 0;
-        occupiedA = false, occupiedB = false;
-        overwriteDisplay = false;
-        currentOperator = '';
-    });
+    btnClear.addEventListener('click', clear);
 
     // delete: trim the display text by 1
     btnDelete.addEventListener('click', () => {
@@ -93,14 +87,19 @@ function addBtnListeners(){
     })
 
      // equals
-     btnEquals.addEventListener('click', () => {
+    btnEquals.addEventListener('click', () => {
         equate();
         // Allow for chaining calculations (ex. = 11 and pressing + after)
-        valueA = Number(display.textContent);
+        if(isNaN(Number(display.textContent))){
+            valueA = 0; //so we don't store NaN
+        }
+        else{
+            valueA = Number(display.textContent);
+        }
         valueB = 0;
         occupiedA = false;
         occupiedB = false;
-     });
+    });
 
     allBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -123,11 +122,30 @@ function equate(){
     // store the second value
     storeDisplayValue(display.textContent);
     // store the result, and display it
-    storeDisplayValue(operate(currentOperator, valueA, valueB));
+    let result = operate(currentOperator, valueA, valueB);
+    if(isNaN(Number(result))){
+        clear();
+        display.textContent = "ERROR";
+        overwriteDisplay = true;
+        return;
+    }
+    console.log("test");
+    storeDisplayValue(result);
     display.textContent = valueA;
     // clear current operator, enable chaining
     currentOperator = '';
     overwriteDisplay = true;
+}
+
+/**
+ * Clears the calculator of its memory.
+ */
+function clear(){
+    display.textContent = '0';
+    valueA = 0, valueB = 0;
+    occupiedA = false, occupiedB = false;
+    overwriteDisplay = false;
+    currentOperator = '';
 }
 
 /**
@@ -241,7 +259,7 @@ function operate(operator, a, b){
         case "/":
             // ensure we are not dividing by 0
             if (b === 0) {
-                return null;
+                return "error";
             }
             return divide(a, b);
             break;
