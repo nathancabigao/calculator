@@ -60,7 +60,10 @@ function addBtnListeners(){
         if(display.textContent.length == 1){
             display.textContent = "0";
         }
-        display.textContent = display.textContent.slice(0,-1);
+        else{
+            display.textContent = display.textContent.slice(0,-1);
+        }
+
     });
 
     // operators
