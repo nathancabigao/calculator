@@ -7,6 +7,7 @@ const display = document.querySelector("#display");
 let currentOperator = '';
 let valueA = 0, valueB = 0;
 let occupiedA = false, occupiedB = false;
+let overwriteDisplay = false;
 
 addBtnListeners();
 
@@ -14,6 +15,8 @@ addBtnListeners();
  * Adds button listeners for all calculator buttons.
  */
 function addBtnListeners(){
+    // debug button listener
+    const allBtns = document.querySelectorAll("button");
     // numbers: append number to display
     btnNumbers.forEach((btnNumber) => {
         btnNumber.addEventListener('click', () => {
@@ -29,7 +32,16 @@ function addBtnListeners(){
             if(display.textContent == "0" && btnNumber.textContent != "."){ 
                 display.textContent = ""; 
             }
-            display.textContent += btnNumber.textContent;
+            // if we can overwrite the result 
+            // ex. if we did 6+9, 15 will be displayed but we can overwrite by
+            // pressing another button
+            if(overwriteDisplay){
+                display.textContent = btnNumber.textContent;
+                overwriteDisplay = false;
+            }
+            else{
+                display.textContent += btnNumber.textContent;
+            }
         });
     });
 
@@ -37,8 +49,9 @@ function addBtnListeners(){
     btnClear.addEventListener('click', () => {
         display.textContent = '0';
         valueA = 0, valueB = 0;
-        displayValue = 0;
         occupiedA = false, occupiedB = false;
+        overwriteDisplay = false;
+        currentOperator = '';
     });
 
     // delete: trim the display text by 1
@@ -51,8 +64,67 @@ function addBtnListeners(){
     });
 
     // operators
-    
+    btnOperators.forEach((btnOperator) => {
+        btnOperator.addEventListener('click', () => {
+            console.log(btnOperator.textContent + "current:" + currentOperator);
+            // check first if there was a previous operation
+            if(currentOperator != ''){
+                equate();
+                console.log("hi");
+                // we then keep this operator for the next.
+                currentOperator = btnOperator.textContent;
+                //display.textContent = valueA;
+                overwriteDisplay = true;
+            }
+            //
+            // if there was no previous, set up for the upcoming operation
+            else{
+                // store the called operator
+                currentOperator = btnOperator.textContent;
+                // store the first value
+                storeDisplayValue(display.textContent);
+                // clear the display
+                display.textContent = "0";
+            }
+        })
+    })
+
      // equals
+     btnEquals.addEventListener('click', () => {
+        equate();
+        // Allow for chaining calculations (ex. = 11 and pressing + after)
+        valueA = Number(display.textContent);
+        valueB = 0;
+        occupiedA = false;
+        occupiedB = false;
+     });
+
+    allBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            console.log(`valueA:${valueA}, occupiedA:${occupiedA}, valueB:${valueB}, occupiedB:${occupiedB}, currentOperator:${currentOperator}, Button Pressed:${btn.textContent}`);
+        })
+    })
+
+}
+
+/**
+ * Event for pressing the equals button, or for finishing a previous operation.
+ */
+function equate(){
+    // if there was no previous operation, do nothing.
+    if(currentOperator === ''){
+        console.log("equate: no current")
+        return;
+    }
+    // if there was, operate.
+    // store the second value
+    storeDisplayValue(display.textContent);
+    // store the result, and display it
+    storeDisplayValue(operate(currentOperator, valueA, valueB));
+    display.textContent = valueA;
+    // clear current operator, enable chaining
+    currentOperator = '';
+    overwriteDisplay = true;
 }
 
 /**
@@ -60,16 +132,24 @@ function addBtnListeners(){
  * overwrite A and wipe B.
  */
 function storeDisplayValue(displayValue){
+    console.log("Storing: " + displayValue);
     if (occupiedA) {
         if (occupiedB) {
             valueA = Number(displayValue);
-            occupiedA = true, occupiedB = false;
+            occupiedA = true;
+            valueB = 0;
+            occupiedB = false;
         }
-        valueB = Number(displayValue);
-        occupiedB = true;
+        else {
+            valueB = Number(displayValue);
+            occupiedB = true;
+            console.log("valueB: " + valueB + " occupiedB: " + occupiedB);
+        }
     }
-    valueA = Number(displayValue);
-    occupiedA = true;
+    else {
+        valueA = Number(displayValue);
+        occupiedA = true;
+    }
 }
 /**
  * Adds two given numbers and returns the resulting sum.
